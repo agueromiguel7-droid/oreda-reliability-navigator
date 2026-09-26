@@ -77,46 +77,79 @@ def load_bundle_html(app_type="main"):
     Constructs a 100% self-contained HTML payload by inlining CSS, JS, data, and base64 logo.
     Works seamlessly on local machines and Streamlit Cloud with zero CORS/path errors.
     """
+    base_dir = os.path.dirname(os.path.abspath(__file__))
     logo_b64 = get_base64_logo()
     
-    if app_type == "main":
-        with open("index.html", "r", encoding="utf-8") as f:
-            html = f.read()
-        with open("app.css", "r", encoding="utf-8") as f:
-            css = f.read()
-        with open("oreda_data.js", "r", encoding="utf-8") as f:
-            data_js = f.read()
-        with open("app.js", "r", encoding="utf-8") as f:
-            app_js = f.read()
+    try:
+        if app_type == "main":
+            with open(os.path.join(base_dir, "index.html"), "r", encoding="utf-8") as f:
+                html = f.read()
+            with open(os.path.join(base_dir, "app.css"), "r", encoding="utf-8") as f:
+                css = f.read()
+            with open(os.path.join(base_dir, "oreda_data.js"), "r", encoding="utf-8") as f:
+                data_js = f.read()
+            with open(os.path.join(base_dir, "app.js"), "r", encoding="utf-8") as f:
+                app_js = f.read()
 
-        # Replace external references with inlined code
-        html = html.replace('<link rel="stylesheet" href="app.css">', f'<style>{css}</style>')
-        html = html.replace('src="mi_logo.png"', f'src="{logo_b64}"')
-        html = html.replace('<script src="oreda_data.js"></script>', f'<script>{data_js}</script>')
-        html = html.replace('<script src="app.js"></script>', f'<script>{app_js}</script>')
-        return html
+            # Replace external references with inlined code
+            html = html.replace('<link rel="stylesheet" href="app.css">', f'<style>{css}</style>')
+            html = html.replace('src="mi_logo.png"', f'src="{logo_b64}"')
+            html = html.replace('<script src="oreda_data.js"></script>', f'<script>{data_js}</script>')
+            html = html.replace('<script src="app.js"></script>', f'<script>{app_js}</script>')
+            return html
 
-    elif app_type == "infografia":
-        with open("infografia.html", "r", encoding="utf-8") as f:
-            html = f.read()
-        with open("infografia.css", "r", encoding="utf-8") as f:
-            css = f.read()
-        with open("oreda_data.js", "r", encoding="utf-8") as f:
-            data_js = f.read()
-        with open("infografia.js", "r", encoding="utf-8") as f:
-            info_js = f.read()
+        elif app_type == "infografia":
+            with open(os.path.join(base_dir, "infografia.html"), "r", encoding="utf-8") as f:
+                html = f.read()
+            with open(os.path.join(base_dir, "infografia.css"), "r", encoding="utf-8") as f:
+                css = f.read()
+            with open(os.path.join(base_dir, "oreda_data.js"), "r", encoding="utf-8") as f:
+                data_js = f.read()
+            with open(os.path.join(base_dir, "infografia.js"), "r", encoding="utf-8") as f:
+                info_js = f.read()
 
-        html = html.replace('<link rel="stylesheet" href="infografia.css">', f'<style>{css}</style>')
-        html = html.replace('src="mi_logo.png"', f'src="{logo_b64}"')
-        html = html.replace('<script src="oreda_data.js"></script>', f'<script>{data_js}</script>')
-        html = html.replace('<script src="infografia.js"></script>', f'<script>{info_js}</script>')
-        return html
+            html = html.replace('<link rel="stylesheet" href="infografia.css">', f'<style>{css}</style>')
+            html = html.replace('src="mi_logo.png"', f'src="{logo_b64}"')
+            html = html.replace('<script src="oreda_data.js"></script>', f'<script>{data_js}</script>')
+            html = html.replace('<script src="infografia.js"></script>', f'<script>{info_js}</script>')
+            return html
 
-    elif app_type == "manual":
-        with open("manual_usuario.html", "r", encoding="utf-8") as f:
-            html = f.read()
-        html = html.replace('src="mi_logo.png"', f'src="{logo_b64}"')
-        return html
+        elif app_type == "manual":
+            manual_path = os.path.join(base_dir, "manual_usuario.html")
+            if not os.path.exists(manual_path):
+                # Fallback check for MD if HTML is not found
+                md_path = os.path.join(base_dir, "MANUAL_DE_USUARIO.md")
+                if os.path.exists(md_path):
+                    with open(md_path, "r", encoding="utf-8") as f:
+                        md_content = f.read()
+                    return f"""
+                    <div style="padding: 2rem; font-family: system-ui, sans-serif; max-width: 900px; margin: auto; line-height: 1.6;">
+                        <div style="background: #e0f2fe; border-left: 4px solid #0284c7; padding: 1rem; border-radius: 4px; margin-bottom: 1.5rem;">
+                            <strong>Aviso:</strong> Mostrando versión Markdown del manual. (Para la versión interactiva con estilo visual, asegúrese de subir <code>manual_usuario.html</code> a su repositorio de GitHub).
+                        </div>
+                        <pre style="white-space: pre-wrap; word-wrap: break-word; font-family: inherit;">{md_content}</pre>
+                    </div>
+                    """
+                return """
+                <div style="padding: 2.5rem; text-align: center; font-family: system-ui, sans-serif;">
+                    <div style="font-size: 2.5rem; margin-bottom: 1rem;">📄</div>
+                    <h3 style="color: #012743;">Archivo <code>manual_usuario.html</code> no encontrado en el repositorio</h3>
+                    <p style="color: #64748b; max-width: 500px; margin: auto;">Por favor suba el archivo <strong>manual_usuario.html</strong> a su repositorio de GitHub para habilitar este módulo en la nube.</p>
+                </div>
+                """
+
+            with open(manual_path, "r", encoding="utf-8") as f:
+                html = f.read()
+            html = html.replace('src="mi_logo.png"', f'src="{logo_b64}"')
+            return html
+
+    except Exception as e:
+        return f"""
+        <div style="padding: 2rem; background: #fee2e2; border-left: 4px solid #ef4444; border-radius: 6px; font-family: system-ui;">
+            <h4 style="color: #991b1b; margin: 0 0 0.5rem 0;">Error al cargar módulo</h4>
+            <p style="color: #7f1d1d; margin: 0;">Detalle: {str(e)}</p>
+        </div>
+        """
 
     return "<h2>Módulo no disponible.</h2>"
 
