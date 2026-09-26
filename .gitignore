@@ -1,0 +1,21 @@
+# Python & Virtual Environments
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+venv/
+ENV/
+
+# Large original PDF and PPTX scans (to stay within GitHub 100MB file size limit)
+2002/
+2009/
+2015/
+*.pdf
+*.pptx
+
+# OS and IDE files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
