@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manual de Usuario | OREDA Reliability Navigator - Grupo Reliarisk</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary: #012743;
+      --primary-light: #0d3859;
+      --primary-container: #1d3d5a;
+      --electric-cyan: #00F0FF;
+      --surface-lowest: #ffffff;
+      --surface-low: #f2f4f6;
+      --surface: #f7f9fb;
+      --surface-highest: #e0e3e5;
+      --text-primary: #191c1e;
+      --text-secondary: #43474e;
+      --text-muted: #73777f;
+      --ghost-border: rgba(195, 199, 206, 0.25);
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--surface);
+      color: var(--text-primary);
+      line-height: 1.7;
+      padding-bottom: 5rem;
+    }
+
+    .manual-header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 4px 16px rgba(25, 28, 30, 0.04);
+      padding: 0.85rem 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand-box {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+
+    .brand-logo {
+      height: 46px;
+      width: auto;
+    }
+
+    .brand-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: var(--primary);
+    }
+
+    .brand-sub {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .nav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.5rem 1.1rem;
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-decoration: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .nav-btn.primary {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .nav-btn.secondary {
+      background: var(--surface-lowest);
+      color: var(--primary);
+      border: 1px solid var(--ghost-border);
+    }
+
+    .manual-container {
+      max-width: 1100px;
+      margin: 2.5rem auto;
+      padding: 0 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+
+    .manual-hero {
+      background: linear-gradient(135deg, #012743 0%, #0d3859 100%);
+      color: #fff;
+      padding: 3rem;
+      border-radius: 1rem;
+      box-shadow: 0 12px 36px rgba(1, 39, 67, 0.1);
+    }
+
+    .manual-tag {
+      font-family: var(--font-display);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--electric-cyan);
+      background: rgba(0, 240, 255, 0.12);
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      display: inline-block;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .manual-hero h1 {
+      font-family: var(--font-display);
+      font-size: 2.4rem;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 0.75rem;
+    }
+
+    .manual-hero p {
+      font-size: 1rem;
+      color: #cbd5e1;
+      max-width: 800px;
+    }
+
+    .doc-section {
+      background: var(--surface-lowest);
+      border-radius: 0.85rem;
+      padding: 2.5rem;
+      box-shadow: 0 4px 20px rgba(25, 28, 30, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .doc-section h2 {
+      font-family: var(--font-display);
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: var(--primary);
+      border-bottom: 2px solid var(--surface-low);
+      padding-bottom: 0.65rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .doc-section h3 {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--primary-light);
+      margin-top: 0.75rem;
+    }
+
+    .doc-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin: 1rem 0;
+    }
+
+    .doc-table th {
+      background: var(--surface-low);
+      padding: 0.75rem 1rem;
+      text-align: left;
+      color: var(--primary);
+      font-weight: 700;
+      font-family: var(--font-display);
+      border-bottom: 2px solid var(--surface-highest);
+    }
+
+    .doc-table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--surface-low);
+    }
+
+    .doc-table tr:hover td {
+      background: rgba(0, 0, 0, 0.015);
+    }
+
+    .callout-box {
+      background: var(--surface-low);
+      border-left: 4px solid #0284c7;
+      padding: 1.15rem 1.5rem;
+      border-radius: 0 0.5rem 0.5rem 0;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .code-pill {
+      font-family: monospace;
+      background: var(--surface-highest);
+      padding: 0.15rem 0.45rem;
+      border-radius: 0.25rem;
+      font-size: 0.82rem;
+      color: var(--primary);
+    }
+
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      background: var(--primary);
+      color: #fff;
+      border-radius: 50%;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    @media print {
+      .manual-header, .header-actions { display: none !important; }
+      body { background: #fff; padding: 0; }
+      .manual-container { max-width: 100%; margin: 0; padding: 0; }
+      .doc-section { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="manual-header">
+    <div class="brand-box">
+      <img src="mi_logo.png" alt="Grupo Reliarisk" class="brand-logo">
+      <div>
+        <div class="brand-title">Manual de Usuario OREDA Navigator</div>
+        <div class="brand-sub">Guía Oficial de Operación y Modelado RAM | ISO 14224</div>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <a href="index.html" class="nav-btn primary"><span>📊</span> Navegador OREDA</a>
+      <a href="infografia.html" class="nav-btn secondary"><span>📘</span> Infografía</a>
+      <button class="nav-btn secondary" onclick="window.print()"><span>🖨️</span> Imprimir PDF</button>
+    </div>
+  </header>
+
+  <div class="manual-container">
+
+    <!-- Hero -->
+    <div class="manual-hero">
+      <span class="manual-tag">Documento Oficial de Usuario • Versión 4.0.0</span>
+      <h1>Manual de Usuario: OREDA Reliability Navigator</h1>
+      <p>
+        Guía de referencia y manual operativo para ingenieros de confiabilidad, especialistas RAM y planificadores de mantenimiento autorizados para el uso de la suite OREDA & ISO 14224.
+      </p>
+    </div>
+
+    <!-- Section 1 -->
+    <section class="doc-section">
+      <h2><span>1.</span> Introducción y Propósito del Sistema</h2>
+      <p>
+        <strong>OREDA Reliability Navigator</strong> es la solución integral de Grupo Reliarisk diseñada para la consulta, modelado estocástico y análisis de disponibilidad de equipos industriales y costa afuera. La plataforma consolida las ediciones oficiales de <strong>OREDA 2002 (4ª Ed.)</strong>, <strong>OREDA 2009 (5ª Ed.)</strong> y <strong>OREDA 2015 (6ª Ed.)</strong> bajo la norma internacional <strong>ISO 14224</strong>.
+      </p>
+
+      <div class="callout-box">
+        <strong>Objetivo Principal:</strong> Facilitar a los analistas la obtención inmediata de tasas de falla ($\lambda$), tiempos medios entre fallas ($MTBF$), tiempos medios para reparar ($MTTR$), disponibilidad inherente ($Ai$) y pérdidas económicas asociadas a paros no planificados.
+      </div>
+    </section>
+
+    <!-- Section 2 -->
+    <section class="doc-section">
+      <h2><span>2.</span> Estructura y Módulos de la Suite</h2>
+      <table class="doc-table">
+        <thead>
+          <tr>
+            <th>Entorno / Módulo</th>
+            <th>Acceso</th>
+            <th>Funcionalidad Principal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Navegador OREDA</strong></td>
+            <td><span class="code-pill">index.html</span></td>
+            <td>Consulta de perfiles, reporte oficial en formato handbook (12 columnas), gráficos RAM, comparador de ediciones y calculadora de redundancia.</td>
+          </tr>
+          <tr>
+            <td><strong>Infografía Didáctica</strong></td>
+            <td><span class="code-pill">infografia.html</span></td>
+            <td>Guía visual de las 5 familias, línea de tiempo histórica, taxonomía de 9 niveles ISO 14224 y catálogo interactivo.</td>
+          </tr>
+          <tr>
+            <td><strong>Base de Datos Integrada</strong></td>
+            <td><span class="code-pill">oreda_data.js</span></td>
+            <td>463 perfiles con más de 5,170 registros de modos de falla categorizados por severidad.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Section 3 -->
+    <section class="doc-section">
+      <h2><span>3.</span> Guía de Operación Paso a Paso</h2>
+
+      <h3><span class="step-badge">1</span> Selección de la Edición OREDA</h3>
+      <p>
+        En la barra superior, haga clic en el botón de la edición que desea consultar: <strong>2002</strong>, <strong>2009</strong> o <strong>2015</strong>. Todos los datos, poblaciones y tasas de falla se actualizarán automáticamente.
+      </p>
+
+      <h3><span class="step-badge">2</span> Búsqueda y Navegación Taxonómica</h3>
+      <p>
+        Puede ubicar el equipo deseado mediante la barra de búsqueda rápida del menú lateral o utilizando los selectores en cascada superiores:
+      </p>
+      <ul>
+        <li><strong>Familia ISO 14224:</strong> Maquinaria, Equipo Eléctrico, Equipo Mecánico, Control y Seguridad, Equipo Submarino.</li>
+        <li><strong>Clase de Equipo:</strong> Compresores, Generadores, Bombas, Válvulas, Recipientes, etc.</li>
+        <li><strong>Subtipo:</strong> Especificación técnica (ej. Centrífugo, Aeroderivada, Motor Diesel).</li>
+        <li><strong>Criterio / Factor:</strong> Subdivisión por potencia (kVA/kW), volumen (m³) o servicio de proceso.</li>
+      </ul>
+
+      <h3><span class="step-badge">3</span> Consulta de la Tabla Oficial y Filtro de Severidad</h3>
+      <p>
+        La tabla oficial presenta las 12 columnas estándar de OREDA. En la barra superior de la tabla puede:
+      </p>
+      <ul>
+        <li><strong>Filtrar Base Temporal:</strong> Alternar entre horas <strong>Calendario (*)</strong>, horas <strong>Operacionales (†)</strong> o ambas.</li>
+        <li><strong>Filtrar por Severidad (Multi-Selección):</strong> Seleccionar uno o múltiples niveles de severidad: <strong>🔴 Críticos</strong>, <strong>🟡 Degradados</strong>, <strong>🔵 Incipientes</strong> y <strong>⚪ Desconocidos</strong>.</li>
+        <li><strong>Exportar Datos:</strong> Exportar a CSV, copiar directamente a Microsoft Excel (TSV) o imprimir en PDF.</li>
+      </ul>
+
+      <h3><span class="step-badge">4</span> Análisis RAM & Confiabilidad</h3>
+      <p>
+        En la pestaña <em>"Análisis RAM & Confiabilidad"</em>, visualice instantáneamente los KPIs calculados ($MTBF$, $MTTR$, $Ai$, Horas de paro anuales) y las 4 curvas estocásticas:
+      </p>
+      <ul>
+        <li><strong>Curva $R(t)$ y $F(t)$</strong>: Confiabilidad y probabilidad de falla a 1 año (8,760 h).</li>
+        <li><strong>Diagrama de Pareto</strong>: Modos de falla con mayor impacto.</li>
+        <li><strong>Función $M(t)$</strong>: Probabilidad acumulada de reparación.</li>
+        <li><strong>Incertidumbre Gamma</strong>: Límite Inferior (5%), Media y Límite Superior (95%).</li>
+      </ul>
+
+      <h3><span class="step-badge">5</span> Calculadora de Redundancia</h3>
+      <p>
+        Evalúe configuraciones <strong>1oo1</strong>, <strong>1oo2</strong>, <strong>2oo3</strong> y <strong>2oo2</strong> ingresando las horas operativas anuales y el costo estimado por hora de parada para calcular el lucro cesante anual.
+      </p>
+    </section>
+
+    <!-- Section 4 -->
+    <section class="doc-section">
+      <h2><span>4.</span> Fórmulas Matemáticas y Convenciones</h2>
+      <table class="doc-table">
+        <thead>
+          <tr>
+            <th>Parámetro / Métrica</th>
+            <th>Fórmula Matemática</th>
+            <th>Interpretación Técnica</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Tasa de Falla ($\lambda$)</strong></td>
+            <td>$\lambda = n / t$ [fallas / $10^6$ h]</td>
+            <td>Frecuencia esperada de eventos de falla por millón de horas.</td>
+          </tr>
+          <tr>
+            <td><strong>Tiempo Medio Entre Fallas</strong></td>
+            <td>$MTBF = 1 / \lambda = t / n$ [horas]</td>
+            <td>Promedio de horas continuas de operación libre de fallas.</td>
+          </tr>
+          <tr>
+            <td><strong>Disponibilidad Inherente</strong></td>
+            <td>$Ai = MTBF / (MTBF + MTTR)$</td>
+            <td>Fracción de tiempo que el sistema está disponible para producción.</td>
+          </tr>
+          <tr>
+            <td><strong>Paralelo 1oo2 (Reserva)</strong></td>
+            <td>$Q_{1oo2} = Q^2 \rightarrow A_{1oo2} = 1 - Q^2$</td>
+            <td>Indisponibilidad cuadrática para sistemas redundantes activos.</td>
+          </tr>
+          <tr>
+            <td><strong>Votación 2oo3 (TMR)</strong></td>
+            <td>$Q_{2oo3} = 3Q^2 - 2Q^3$</td>
+            <td>Arquitectura de seguridad tolerante a una falla simple.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Section 5 -->
+    <section class="doc-section">
+      <h2><span>5.</span> Instrucciones de Inicio y Despliegue</h2>
+      <p>
+        Para iniciar la aplicación en cualquier estación de trabajo:
+      </p>
+      <ol style="margin-left: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
+        <li>Ejecute el archivo <span class="code-pill">iniciar_aplicacion.bat</span> ubicado en el directorio raíz.</li>
+        <li>El navegador predeterminado se abrirá automáticamente en <span class="code-pill">http://localhost:8080/index.html</span>.</li>
+        <li>La aplicación opera de manera 100% autónoma y no requiere conexión a Internet para su funcionamiento.</li>
+      </ol>
+    </section>
+
+  </div>
+
+</body>
+</html>
