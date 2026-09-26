@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OREDA Reliability Navigator | Grupo Reliarisk</title>
+  <meta name="description" content="Plataforma de consulta y análisis de confiabilidad, mantenibilidad y disponibilidad de equipos costa afuera basada en OREDA e ISO 14224.">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Styles -->
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+  <!-- =========================================================================
+       APP HEADER (Glassmorphism & Brand Header)
+       ========================================================================= -->
+  <header class="app-header">
+    <div class="brand-section">
+      <div class="logo-container">
+        <img src="mi_logo.png" alt="Grupo Reliarisk" class="company-logo">
+      </div>
+      <div class="brand-titles">
+        <div class="brand-name">
+          OREDA Navigator
+          <span class="brand-badge">ISO 14224</span>
+        </div>
+        <div class="brand-sub">
+          Base de Datos de Confiabilidad y Falla Costa Afuera | Grupo Reliarisk
+        </div>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <!-- Edition Selector -->
+      <div class="edition-selector-wrap" id="editionSelector">
+        <button class="edition-btn" data-edition="2002">
+          2002 <span class="pill-tag">4ª Ed.</span>
+        </button>
+        <button class="edition-btn active" data-edition="2009">
+          2009 <span class="pill-tag">5ª Ed.</span>
+        </button>
+        <button class="edition-btn" data-edition="2015">
+          2015 <span class="pill-tag">6ª Ed.</span>
+        </button>
+      </div>
+
+      <!-- Quick Preset Button: Exact User Sample Report -->
+      <button class="preset-btn-sample" id="btnLoadUserPreset" title="Carga el conjunto de datos exacto del reporte de la imagen compartida">
+        <span class="icon-sparkle">✦</span>
+        Reporte Imagen Referencia
+      </button>
+
+      <!-- Didactic Infographic Link Button -->
+      <a href="infografia.html" class="preset-btn-sample" style="background: rgba(0, 240, 255, 0.08); border-color: rgba(0, 240, 255, 0.4); color: var(--primary); text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem;" title="Abrir Infografía Didáctica de Familias y Ediciones OREDA">
+        <span>📘</span>
+        Guía Didáctica
+      </a>
+
+      <!-- User Manual Link Button -->
+      <a href="manual_usuario.html" class="preset-btn-sample" style="background: rgba(1, 39, 67, 0.05); border-color: var(--ghost-border); color: var(--primary); text-decoration: none; display: inline-flex; align-items: center; gap: 0.4rem;" title="Abrir Manual de Usuario Oficial">
+        <span>📖</span>
+        Manual de Usuario
+      </a>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       MAIN ASYMMETRIC LAYOUT
+       ========================================================================= -->
+  <main class="main-layout">
+    
+    <!-- LEFT SIDEBAR: TAXONOMY HIERARCHY -->
+    <aside class="sidebar-panel">
+      <div class="sidebar-title-row">
+        <div class="sidebar-title">
+          <span>❖</span> Taxonomía ISO 14224
+        </div>
+        <span style="font-size: 0.72rem; color: var(--text-muted);" id="sidebarEditionBadge">Edición 2009</span>
+      </div>
+
+      <!-- Omnisearch Bar -->
+      <div class="omnisearch-well">
+        <span class="omnisearch-icon">🔍</span>
+        <input type="text" id="omniSearchInput" class="omnisearch-input" placeholder="Buscar equipo, modo de falla, código...">
+      </div>
+
+      <!-- Taxonomy Accordion Hierarchy -->
+      <div class="hierarchy-accordion" id="hierarchyAccordion">
+        <!-- Rendered dynamically via JS -->
+      </div>
+    </aside>
+
+    <!-- RIGHT WORKSPACE CONTENT -->
+    <section class="workspace-content">
+      
+      <!-- HERO EQUIPMENT CARD -->
+      <div class="equipment-hero-panel" id="equipmentHero">
+        <div class="hero-top-row">
+          <div class="hero-title-area">
+            <div class="hero-breadcrumbs" id="heroBreadcrumbs">
+              <span>Machinery</span>
+              <span class="sep">/</span>
+              <span>Compressors</span>
+              <span class="sep">/</span>
+              <span id="heroTaxCode">Tax. 1.1</span>
+            </div>
+            <h1 class="hero-equipment-name" id="heroTitle">Compresores - Todas las unidades</h1>
+            <p class="hero-equipment-desc" id="heroDesc">
+              Datos agregados para compresores en instalaciones costa afuera.
+            </p>
+          </div>
+          <div class="tab-actions">
+            <button class="action-btn-secondary" id="btnExportCsv" title="Exportar reporte tabular a formato CSV">
+              <span>⬇</span> Exportar CSV
+            </button>
+            <button class="action-btn-secondary" id="btnCopyTsv" title="Copiar al portapapeles para pegar directo en Excel">
+              <span>📋</span> Copiar Tabla
+            </button>
+            <button class="action-btn-secondary" id="btnPrintReport" title="Vista de impresión lista para PDF">
+              <span>🖨</span> Imprimir / PDF
+            </button>
+          </div>
+        </div>
+
+        <!-- Meta Summary Badges -->
+        <div class="hero-meta-grid" id="heroMetaGrid">
+          <div class="meta-pill">
+            <span class="meta-label">Población (N)</span>
+            <span class="meta-value" id="metaPop">131</span>
+          </div>
+          <div class="meta-pill">
+            <span class="meta-label">Instalaciones</span>
+            <span class="meta-value" id="metaInst">38</span>
+          </div>
+          <div class="meta-pill">
+            <span class="meta-label">Horas Calendario (*)</span>
+            <span class="meta-value" id="metaCal">3.82 × 10⁶ h</span>
+          </div>
+          <div class="meta-pill">
+            <span class="meta-label">Horas Operacionales (†)</span>
+            <span class="meta-value" id="metaOp">2.37 × 10⁶ h</span>
+          </div>
+          <div class="meta-pill">
+            <span class="meta-label">No. Demandas</span>
+            <span class="meta-value accent" id="metaDem">82,472</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CASCADING HIERARCHY SELECTORS (ISO 14224 LEVEL 5 -> 6 -> 7 -> 8) -->
+      <div class="taxonomy-filter-bar" id="taxonomyFilterBar">
+        <div class="filter-group">
+          <span class="filter-group-label">1. Familia:</span>
+          <select id="selFamily" class="filter-select">
+            <option value="all">Todas las familias</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <span class="filter-group-label">2. Clase de Equipo:</span>
+          <select id="selClass" class="filter-select">
+            <option value="all">Todas las clases</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <span class="filter-group-label">3. Subtipo / Equipo:</span>
+          <select id="selSubtype" class="filter-select">
+            <option value="all">Todos los subtipos</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <span class="filter-group-label">4. Criterio / Factor:</span>
+          <select id="selFactor" class="filter-select">
+            <option value="all">Todos los factores</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- VIEW TABS -->
+      <div class="view-tabs-container">
+        <div class="view-tabs-list">
+          <button class="view-tab-btn active" data-tab="tab-report">
+            <span>📄</span> Reporte Oficial OREDA
+            <span class="tab-badge">Formato Imagen</span>
+          </button>
+          <button class="view-tab-btn" data-tab="tab-ram">
+            <span>⚡</span> Análisis RAM & Confiabilidad
+            <span class="tab-badge">Curvas R(t), A, M</span>
+          </button>
+          <button class="view-tab-btn" data-tab="tab-compare">
+            <span>⚖</span> Comparativa Ediciones (2002 - 2009 - 2015)
+          </button>
+          <button class="view-tab-btn" data-tab="tab-sim">
+            <span>⚙</span> Calculadora de Redundancia
+          </button>
+        </div>
+      </div>
+
+      <!-- =====================================================================
+           TAB 1: OFFICIAL OREDA REPORT (EXACT LAYOUT FROM USER IMAGE)
+           ===================================================================== -->
+      <div class="tab-pane active" id="tab-report">
+        <div class="table-container-card">
+          <!-- Toolbar with Time Basis and Multi-level Severity filters (ISO 14224 / OREDA) -->
+          <div class="table-toolbar">
+            <div class="table-toolbar-header-row">
+              <div class="table-toolbar-title">
+                <span>📊</span>
+                <span>Tabla de Frecuencia de Falla y Tiempo de Reparación</span>
+              </div>
+              
+              <div class="table-filter-group-wrapper">
+                <span class="toolbar-label">Base Temporal:</span>
+                <div class="table-filter-pills" id="timeBasisFilter">
+                  <button class="filter-pill-btn active" data-basis="all">Ambas (* y †)</button>
+                  <button class="filter-pill-btn" data-basis="calendar">Calendario (*)</button>
+                  <button class="filter-pill-btn" data-basis="operational">Operacional (†)</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Severity Filter Row (Critical, Degraded, Incipient, Unknown) -->
+            <div class="table-toolbar-filter-row">
+              <div class="severity-filter-wrapper">
+                <span class="toolbar-label"><span class="filter-icon">⚡</span> Nivel de Severidad:</span>
+                <div class="table-filter-pills severity-pills" id="severityFilterGroup">
+                  <button class="filter-pill-btn active" data-severity="all" title="Mostrar todos los niveles de severidad">Todos</button>
+                  <button class="filter-pill-btn severity-btn-crit" data-severity="Critical" title="Falla crítica: cese inmediato de la función principal">
+                    <span class="sev-dot dot-crit"></span> 1. Críticos (Critical)
+                  </button>
+                  <button class="filter-pill-btn severity-btn-deg" data-severity="Degraded" title="Falla degradada: pérdida parcial de rendimiento">
+                    <span class="sev-dot dot-deg"></span> 2. Degradados (Degraded)
+                  </button>
+                  <button class="filter-pill-btn severity-btn-inc" data-severity="Incipient" title="Falla incipiente: defecto o condición incipiente sin paro inmediato">
+                    <span class="sev-dot dot-inc"></span> 3. Incipientes (Incipient)
+                  </button>
+                  <button class="filter-pill-btn severity-btn-unk" data-severity="Unknown" title="Severidad no especificada o desconocida">
+                    <span class="sev-dot dot-unk"></span> 4. Desconocidos (Unknown)
+                  </button>
+                </div>
+              </div>
+              <div class="severity-active-summary" id="severityActiveSummary">
+                <span class="summary-pill">Mostrando: <strong>Todos los niveles</strong></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Exact Table Matching User's Image -->
+          <div class="table-responsive">
+            <table class="oreda-report-table" id="oredaReportTable">
+              <thead>
+                <!-- TIER 1: Grouped Headers -->
+                <tr class="tier-1">
+                  <th class="col-empty-top col-left" colspan="1" style="width: 20%;"></th>
+                  <th class="col-empty-top" colspan="1" style="width: 8%;"></th>
+                  <th class="col-empty-top" colspan="1" style="width: 7%;"></th>
+                  <th colspan="5" style="width: 35%;">Tasa de Falla (por 10⁶ horas)</th>
+                  <th class="col-empty-top" colspan="1" style="width: 10%;"></th>
+                  <th colspan="3" style="width: 20%;">Reparacion (Hr./H)</th>
+                </tr>
+                <!-- TIER 2: Detailed Column Headers -->
+                <tr class="tier-2">
+                  <th class="col-left">Modo de Falla</th>
+                  <th>Codigo de la Falla</th>
+                  <th>No de Fallas</th>
+                  <th>Inferior</th>
+                  <th>Medio</th>
+                  <th>Superior</th>
+                  <th>Ds</th>
+                  <th>n/t</th>
+                  <th>Actividad Reparación Hr.</th>
+                  <th>Min.</th>
+                  <th>Media</th>
+                  <th>Maxima</th>
+                </tr>
+              </thead>
+              <tbody id="oredaTableBody">
+                <!-- Rows injected dynamically via JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Footer Footnotes & ISO Citation -->
+          <div class="table-footer-notes">
+            <div>
+              <strong>Simbología OREDA:</strong> 
+              <span class="time-basis-star">*</span> Tiempo de Calendario | 
+              <span class="time-basis-dagger">†</span> Tiempo Operacional | 
+              Tasas expresadas en fallas por 10⁶ horas (intervalo de confianza al 90%: Inferior 5%, Superior 95%).
+            </div>
+            <div>
+              <strong>Norma:</strong> ISO 14224:2016 / OREDA Handbook
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- =====================================================================
+           TAB 2: ADVANCED RAM (RELIABILITY, AVAILABILITY, MAINTAINABILITY)
+           ===================================================================== -->
+      <div class="tab-pane" id="tab-ram" style="display: none;">
+        <!-- KPI Bento Cards -->
+        <div class="ram-dashboard-grid">
+          <div class="kpi-bento-card">
+            <div class="kpi-card-header">
+              <span class="kpi-card-title">Tasa de Falla Global (λ)</span>
+              <span class="kpi-card-icon">⚡</span>
+            </div>
+            <div class="kpi-card-value" id="kpiLambda">270.2</div>
+            <div class="kpi-card-sub">
+              <span>Fallas / 10⁶ h</span> • <span id="kpiLambdaYear">2.37 fallas/año</span>
+            </div>
+          </div>
+
+          <div class="kpi-bento-card">
+            <div class="kpi-card-header">
+              <span class="kpi-card-title">Tiempo Medio Entre Fallas</span>
+              <span class="kpi-card-icon">⏱</span>
+            </div>
+            <div class="kpi-card-value" id="kpiMtbf">3,701 h</div>
+            <div class="kpi-card-sub">
+              <span>MTBF Estimado</span> • <span id="kpiMtbfYear">0.42 años</span>
+            </div>
+          </div>
+
+          <div class="kpi-bento-card">
+            <div class="kpi-card-header">
+              <span class="kpi-card-title">Tiempo Medio Reparación</span>
+              <span class="kpi-card-icon">🔧</span>
+            </div>
+            <div class="kpi-card-value" id="kpiMttr">17.0 h</div>
+            <div class="kpi-card-sub">
+              <span>MTTR Activo</span> • <span id="kpiManhours">32.0 HH promedio</span>
+            </div>
+          </div>
+
+          <div class="kpi-bento-card">
+            <div class="kpi-card-header">
+              <span class="kpi-card-title">Disponibilidad Inherente</span>
+              <span class="kpi-card-icon">🛡</span>
+            </div>
+            <div class="kpi-card-value" id="kpiAvailability">99.54%</div>
+            <div class="kpi-card-sub">
+              <span>Parada anual:</span> <span id="kpiDowntime">40.1 h/año</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive Charts: Reliability Curve & Pareto -->
+        <div class="charts-grid" style="margin-top: 1.5rem;">
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <div>
+                <h3 class="chart-title">Curvas de Confiabilidad R(t) e Inconfiabilidad F(t)</h3>
+                <span class="chart-subtitle">Modelo exponencial continuo R(t) = e^(-λt)</span>
+              </div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">
+                Horizonte: 1 Año (8,760 h)
+              </div>
+            </div>
+            <div class="svg-chart-container" id="reliabilityChartBox">
+              <!-- Rendered via SVG in JS -->
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <div>
+                <h3 class="chart-title">Pareto de Modos de Falla</h3>
+                <span class="chart-subtitle">Contribución por tasa de falla (λ) y severidad</span>
+              </div>
+            </div>
+            <div class="svg-chart-container" id="paretoChartBox">
+              <!-- Rendered via SVG in JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Maintainability M(t) Curve & Criticality Matrix -->
+        <div class="charts-grid" style="margin-top: 1.5rem;">
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <div>
+                <h3 class="chart-title">Función de Mantenibilidad M(t)</h3>
+                <span class="chart-subtitle">Probabilidad de completar la reparación en tiempo t: M(t) = 1 - e^(-t/MTTR)</span>
+              </div>
+            </div>
+            <div class="svg-chart-container" id="maintainabilityChartBox">
+              <!-- Rendered via SVG in JS -->
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <div class="chart-card-header">
+              <div>
+                <h3 class="chart-title">Distribución de Incertidumbre Gamma (90%)</h3>
+                <span class="chart-subtitle">Límite Inferior (5%), Media Multi-muestra y Límite Superior (95%)</span>
+              </div>
+            </div>
+            <div class="svg-chart-container" id="gammaChartBox">
+              <!-- Rendered via SVG in JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- =====================================================================
+           TAB 3: MULTI-EDITION COMPARATOR (2002 vs 2009 vs 2015)
+           ===================================================================== -->
+      <div class="tab-pane" id="tab-compare" style="display: none;">
+        <div class="comparator-grid" id="comparatorGrid">
+          <!-- Rendered dynamically -->
+        </div>
+
+        <div class="chart-card" style="margin-top: 1.5rem;">
+          <div class="chart-card-header">
+            <div>
+              <h3 class="chart-title">Evolución Histórica de Tasa de Falla OREDA (2002 → 2009 → 2015)</h3>
+              <span class="chart-subtitle">Impacto de la maduración tecnológica y mantenimiento predictivo</span>
+            </div>
+          </div>
+          <div class="svg-chart-container" id="compareHistoryChartBox">
+            <!-- Rendered via SVG in JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- =====================================================================
+           TAB 4: REDUNDANCY & AVAILABILITY SIMULATOR
+           ===================================================================== -->
+      <div class="tab-pane" id="tab-sim" style="display: none;">
+        <div class="simulator-panel">
+          <div>
+            <h2 style="font-family: var(--font-display); color: var(--primary); font-size: 1.25rem;">
+              Simulador de Disponibilidad y Arquitecturas de Planta
+            </h2>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.25rem;">
+              Evalúa el impacto de configuraciones en serie y redundancia (1oo1, 1oo2, 2oo3) en la disponibilidad y costo por indisponibilidad de la instalación.
+            </p>
+          </div>
+
+          <div class="simulator-controls">
+            <div class="sim-input-well">
+              <span class="sim-label">Horas Operativas al Año</span>
+              <input type="number" id="simHours" class="sim-input" value="8760" min="1" max="8760">
+            </div>
+            <div class="sim-input-well">
+              <span class="sim-label">Costo Horario de Paro ($ USD/h)</span>
+              <input type="number" id="simCostPerHour" class="sim-input" value="15000" min="0" step="500">
+            </div>
+            <div class="sim-input-well">
+              <span class="sim-label">MTTR Personalizado (h)</span>
+              <input type="number" id="simCustomMttr" class="sim-input" value="17.0" min="0.1" step="0.5">
+            </div>
+          </div>
+
+          <div class="sim-results-grid" id="simResultsGrid">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- TOAST NOTIFICATION -->
+  <div class="toast-msg" id="toastMsg">
+    <span id="toastIcon">✔</span>
+    <span id="toastText">Operación realizada con éxito</span>
+  </div>
+
+  <!-- Scripts -->
+  <script src="oreda_data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
