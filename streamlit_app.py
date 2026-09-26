@@ -236,6 +236,95 @@ def render_authenticated_workspace():
     current = st.session_state.current_user
     logo_b64 = get_base64_logo()
 
+    # --- SIDEBAR HIGH CONTRAST & PREMIUM STYLES ---
+    st.markdown("""
+    <style>
+    /* Dark Navy Sidebar Background */
+    [data-testid="stSidebar"] {
+        background-color: #012743 !important;
+    }
+    
+    [data-testid="stSidebar"] * {
+        color: #ffffff !important;
+    }
+
+    /* Radio Group Container */
+    [data-testid="stSidebar"] [data-testid="stRadio"] [role="radiogroup"] {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    /* Radio Button Cards */
+    [data-testid="stSidebar"] [data-testid="stRadio"] [role="radiogroup"] > label {
+        background: rgba(255, 255, 255, 0.06) !important;
+        padding: 0.65rem 0.85rem !important;
+        border-radius: 0.5rem !important;
+        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        transition: all 0.2s ease !important;
+        cursor: pointer !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+
+    [data-testid="stSidebar"] [data-testid="stRadio"] [role="radiogroup"] > label:hover {
+        background: rgba(0, 240, 255, 0.15) !important;
+        border-color: rgba(0, 240, 255, 0.5) !important;
+        transform: translateX(3px);
+    }
+
+    [data-testid="stSidebar"] [data-testid="stRadio"] [role="radiogroup"] > label p,
+    [data-testid="stSidebar"] [data-testid="stRadio"] [role="radiogroup"] > label span {
+        color: #ffffff !important;
+        font-size: 0.88rem !important;
+        font-weight: 600 !important;
+    }
+
+    /* Selected Radio Card */
+    [data-testid="stSidebar"] [data-testid="stRadio"] [role="radiogroup"] > label:has(input:checked),
+    [data-testid="stSidebar"] [data-testid="stRadio"] [role="radiogroup"] > label[data-checked="true"] {
+        background: rgba(0, 240, 255, 0.22) !important;
+        border-color: #00F0FF !important;
+        box-shadow: 0 0 14px rgba(0, 240, 255, 0.3) !important;
+    }
+
+    [data-testid="stSidebar"] [data-testid="stRadio"] [role="radiogroup"] > label:has(input:checked) p,
+    [data-testid="stSidebar"] [data-testid="stRadio"] [role="radiogroup"] > label[data-checked="true"] p {
+        color: #00F0FF !important;
+        font-weight: 800 !important;
+    }
+
+    /* Radio Widget Header Label */
+    [data-testid="stSidebar"] [data-testid="stWidgetLabel"] p {
+        color: #94a3b8 !important;
+        font-size: 0.74rem !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.06em !important;
+        margin-bottom: 0.6rem !important;
+    }
+
+    /* Logout Button Styling */
+    [data-testid="stSidebar"] .stButton > button {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+        color: #ffffff !important;
+        font-weight: 700 !important;
+        border: none !important;
+        box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35) !important;
+        border-radius: 0.5rem !important;
+        padding: 0.6rem 1rem !important;
+        transition: all 0.2s ease !important;
+        margin-top: 1rem !important;
+    }
+
+    [data-testid="stSidebar"] .stButton > button:hover {
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 6px 20px rgba(220, 38, 38, 0.5) !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
     # --- SIDEBAR CONTROL PANEL ---
     with st.sidebar:
         st.markdown(f"""
