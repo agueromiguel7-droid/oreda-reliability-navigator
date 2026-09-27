@@ -80,6 +80,73 @@ def load_bundle_html(app_type="main"):
     base_dir = os.path.dirname(os.path.abspath(__file__))
     logo_b64 = get_base64_logo()
     
+    # Script to inject into embedded HTML to intercept intra-module navigation safely
+    nav_interceptor_script = """
+    <style>
+    @keyframes toastSlideIn {
+        from { transform: translateY(-20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+    .streamlit-nav-toast {
+        position: fixed;
+        top: 16px;
+        right: 20px;
+        z-index: 999999;
+        background: #012743;
+        color: #ffffff;
+        padding: 1rem 1.25rem;
+        border-radius: 10px;
+        box-shadow: 0 12px 32px rgba(1, 39, 67, 0.4);
+        border: 2px solid #00F0FF;
+        font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        max-width: 440px;
+        animation: toastSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        display: none;
+    }
+    </style>
+    <div id="stSuiteToast" class="streamlit-nav-toast">
+        <div style="display: flex; align-items: flex-start; gap: 0.85rem;">
+            <span style="font-size: 1.6rem; line-height: 1;">👈</span>
+            <div>
+                <strong style="color: #00F0FF; font-size: 0.92rem; display: block; margin-bottom: 0.25rem;">Navegación en la Suite OREDA</strong>
+                <p id="stSuiteToastText" style="margin: 0; font-size: 0.82rem; line-height: 1.45; color: #e2e8f0;"></p>
+            </div>
+        </div>
+    </div>
+    <script>
+    (function() {
+        function setupNavigationInterception() {
+            document.querySelectorAll('a[href$=".html"]').forEach(function(anchor) {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var href = this.getAttribute('href') || '';
+                    var targetName = "el módulo correspondiente";
+                    if (href.indexOf('infografia') !== -1) targetName = "📘 Guía Didáctica e Infografía";
+                    else if (href.indexOf('manual') !== -1) targetName = "📖 Manual de Usuario Oficial";
+                    else if (href.indexOf('index') !== -1) targetName = "📊 Navegador OREDA";
+
+                    var toast = document.getElementById('stSuiteToast');
+                    var toastText = document.getElementById('stSuiteToastText');
+                    if (toast && toastText) {
+                        toastText.innerHTML = 'Para ir a <strong>' + targetName + '</strong> sin salir de tu sesión, selecciónalo directamente en el <strong>Menú Lateral Izquierdo</strong>.';
+                        toast.style.display = 'block';
+                        clearTimeout(window._toastTimeout);
+                        window._toastTimeout = setTimeout(function() {
+                            toast.style.display = 'none';
+                        }, 6000);
+                    }
+                });
+            });
+        }
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', setupNavigationInterception);
+        } else {
+            setupNavigationInterception();
+        }
+    })();
+    </script>
+    """
+
     try:
         if app_type == "main":
             with open(os.path.join(base_dir, "index.html"), "r", encoding="utf-8") as f:
@@ -96,6 +163,7 @@ def load_bundle_html(app_type="main"):
             html = html.replace('src="mi_logo.png"', f'src="{logo_b64}"')
             html = html.replace('<script src="oreda_data.js"></script>', f'<script>{data_js}</script>')
             html = html.replace('<script src="app.js"></script>', f'<script>{app_js}</script>')
+            html = html.replace('</body>', f'{nav_interceptor_script}</body>')
             return html
 
         elif app_type == "infografia":
@@ -112,6 +180,7 @@ def load_bundle_html(app_type="main"):
             html = html.replace('src="mi_logo.png"', f'src="{logo_b64}"')
             html = html.replace('<script src="oreda_data.js"></script>', f'<script>{data_js}</script>')
             html = html.replace('<script src="infografia.js"></script>', f'<script>{info_js}</script>')
+            html = html.replace('</body>', f'{nav_interceptor_script}</body>')
             return html
 
         elif app_type == "manual":
@@ -141,6 +210,7 @@ def load_bundle_html(app_type="main"):
             with open(manual_path, "r", encoding="utf-8") as f:
                 html = f.read()
             html = html.replace('src="mi_logo.png"', f'src="{logo_b64}"')
+            html = html.replace('</body>', f'{nav_interceptor_script}</body>')
             return html
 
     except Exception as e:
@@ -160,35 +230,40 @@ def load_bundle_html(app_type="main"):
 def render_login_screen():
     logo_b64 = get_base64_logo()
     
-    # Custom CSS for Login Page
+    # Custom CSS for Login Page with High Contrast and Clean Inputs
     st.markdown("""
     <style>
+    /* Global Page Styling for Login */
+    .stApp {
+        background-color: #f7f9fb;
+    }
+    
     .login-container-card {
         background: #ffffff;
         border-radius: 1rem;
-        padding: 2.5rem 3rem;
+        padding: 2.5rem 2.5rem 1.5rem 2.5rem;
         box-shadow: 0 16px 48px rgba(1, 39, 67, 0.08);
-        border: 1px solid rgba(195, 199, 206, 0.25);
-        max-width: 520px;
-        margin: 2rem auto;
+        border: 1px solid rgba(195, 199, 206, 0.3);
+        max-width: 500px;
+        margin: 1.5rem auto 0.5rem auto;
         text-align: center;
     }
     .login-logo {
         height: 60px;
-        margin-bottom: 1.25rem;
+        margin-bottom: 1rem;
         object-fit: contain;
     }
     .login-title {
         font-family: 'Space Grotesk', sans-serif;
-        font-size: 1.6rem;
+        font-size: 1.55rem;
         font-weight: 700;
         color: #012743;
-        margin-bottom: 0.35rem;
+        margin-bottom: 0.3rem;
     }
     .login-subtitle {
-        font-size: 0.85rem;
+        font-size: 0.84rem;
         color: #64748b;
-        margin-bottom: 1.75rem;
+        margin-bottom: 1rem;
     }
     .login-pill {
         display: inline-block;
@@ -199,18 +274,93 @@ def render_login_screen():
         padding: 0.25rem 0.75rem;
         border-radius: 999px;
         text-transform: uppercase;
-        margin-bottom: 1rem;
+        margin-bottom: 0.75rem;
         letter-spacing: 0.06em;
     }
+
+    /* Form Container */
+    [data-testid="stForm"] {
+        background: #ffffff !important;
+        border: 1px solid rgba(195, 199, 206, 0.35) !important;
+        border-radius: 1rem !important;
+        padding: 1.8rem 2rem !important;
+        box-shadow: 0 12px 36px rgba(1, 39, 67, 0.06) !important;
+        max-width: 500px !important;
+        margin: 0 auto !important;
+    }
+
+    /* Labels */
+    [data-testid="stForm"] label,
+    [data-testid="stForm"] label p {
+        color: #012743 !important;
+        font-weight: 700 !important;
+        font-size: 0.92rem !important;
+        margin-bottom: 0.35rem !important;
+    }
+
+    /* Input Fields: Crisp Pure White / Soft Gray with Dark Text */
+    [data-testid="stForm"] input[type="text"],
+    [data-testid="stForm"] input[type="password"] {
+        background-color: #f8fafc !important;
+        color: #0f172a !important;
+        border: 1.5px solid #cbd5e1 !important;
+        border-radius: 0.55rem !important;
+        padding: 0.7rem 0.95rem !important;
+        font-size: 0.96rem !important;
+        font-weight: 600 !important;
+        transition: all 0.2s ease !important;
+    }
+
+    [data-testid="stForm"] input[type="text"]:focus,
+    [data-testid="stForm"] input[type="password"]:focus {
+        background-color: #ffffff !important;
+        color: #0f172a !important;
+        border-color: #0284c7 !important;
+        box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.25) !important;
+        outline: none !important;
+    }
+
+    [data-testid="stForm"] input::placeholder {
+        color: #94a3b8 !important;
+        font-weight: 400 !important;
+    }
+
+    /* Submit Button */
+    [data-testid="stForm"] button[kind="secondaryFormSubmit"],
+    [data-testid="stForm"] button[kind="primaryFormSubmit"],
+    [data-testid="stForm"] button {
+        background: linear-gradient(135deg, #012743 0%, #0d3859 100%) !important;
+        color: #00F0FF !important;
+        font-weight: 700 !important;
+        font-size: 1.02rem !important;
+        border: 1.5px solid #00F0FF !important;
+        border-radius: 0.55rem !important;
+        padding: 0.7rem 1.25rem !important;
+        margin-top: 0.75rem !important;
+        box-shadow: 0 4px 14px rgba(1, 39, 67, 0.2) !important;
+        transition: all 0.2s ease !important;
+        cursor: pointer !important;
+    }
+
+    [data-testid="stForm"] button:hover {
+        background: linear-gradient(135deg, #0d3859 0%, #012743 100%) !important;
+        box-shadow: 0 0 20px rgba(0, 240, 255, 0.45) !important;
+        transform: translateY(-1px) !important;
+    }
+
     .demo-creds-box {
         background: #f8fafc;
         border-radius: 0.65rem;
-        padding: 1rem;
-        margin-top: 1.5rem;
+        padding: 1rem 1.25rem;
+        margin: 1.25rem auto 0 auto;
+        max-width: 500px;
         font-size: 0.78rem;
         color: #475569;
         text-align: left;
-        border-left: 3px solid #00F0FF;
+        border-left: 3.5px solid #00F0FF;
+        border-top: 1px solid #e2e8f0;
+        border-right: 1px solid #e2e8f0;
+        border-bottom: 1px solid #e2e8f0;
     }
     </style>
     """, unsafe_allow_html=True)
